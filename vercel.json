@@ -1,4 +1,12 @@
 {
-  "name": "suriya-personal-website",
-  "version": 2
+    "rewrites": [
+        {
+            "source": "/api/(.*)",
+            "destination": "/api/index.py"
+        },
+        {
+            "source": "/(.*)",
+            "destination": "/frontend/index.html"
+        }
+    ]
 }
