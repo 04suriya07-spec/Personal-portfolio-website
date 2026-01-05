@@ -35,54 +35,28 @@ function App() {
   const [projects, setProjects] = useState<Project[]>([]);
 
   useEffect(() => {
-    // In a real scenario, fetch from http://localhost:8000/api/...
-    // For this demo, we'll hardcode initial state to match the static site 
-    // to ensure it works immediately without running the python server, 
-    // but the structure is ready for API integration.
+    const fetchData = async () => {
+      try {
+        const [profileRes, skillsRes, projectsRes] = await Promise.all([
+          fetch('/api/profile'),
+          fetch('/api/skills'),
+          fetch('/api/projects')
+        ]);
 
-    setProfile({
-      name: "Suriya R V",
-      role: "Full-Stack Developer & AI Specialist",
-      about: "I am a passionate software engineer dedicated to building high-performance web applications and exploring the frontiers of Artificial Intelligence. With a strong foundation in modern frameworks and a keen eye for design, I bridge the gap between complex backend logic and intuitive user experiences.",
-      location: "Chennai, India",
-      email: "04suriya07@gmail.com",
-      phone: "+91 98431 87793",
-      social: {
-        linkedin: "https://www.linkedin.com/in/suriya-r-v-59a998366/",
-        github: "https://github.com/04suriya07-spec"
+        const profileData = await profileRes.json();
+        const skillsData = await skillsRes.json();
+        const projectsData = await projectsRes.json();
+
+        setProfile(profileData);
+        setSkills(skillsData);
+        setProjects(projectsData);
+      } catch (error) {
+        console.error("Error fetching portfolio data:", error);
+        // Fallback or error state handling
       }
-    });
+    };
 
-    setSkills([
-      { name: "Frontend Mastery", icon: "fab fa-react", level: 90 },
-      { name: "Backend Architecture", icon: "fab fa-python", level: 85 },
-      { name: "Cloud & DevOps", icon: "fas fa-cloud", level: 75 },
-      { name: "UI/UX Design", icon: "fas fa-paint-brush", level: 80 }
-    ]);
-
-    setProjects([
-      {
-        title: "Coach-Pro Intelligence",
-        description: "A comprehensive educational management ecosystem featuring automated scheduling, student progress tracking, and AI-driven performance analytics.",
-        image: "/images/project_thumb.png",
-        link: "https://all-in-one-coaching-platform.vercel.app/",
-        tags: ["React", "PostgreSQL", "AI"]
-      },
-      {
-        title: "SquadConnect",
-        description: "A professional networking hub built for collaborative teams to streamline project communication and resource sharing in real-time.",
-        image: "/images/squadconnect.png",
-        link: "#",
-        tags: ["Node.js", "Socket.io", "Tailwind"]
-      },
-      {
-        title: "Kidz World Experience",
-        description: "An interactive, educational platform for children featuring gamified learning modules and a vibrant, responsive user interface.",
-        image: "/images/kidzworld.png",
-        link: "#",
-        tags: ["HTML5", "Canvas", "CSS3"]
-      }
-    ]);
+    fetchData();
   }, []);
 
   if (!profile) return <div className="loading-screen">Preparing Excellence...</div>;
